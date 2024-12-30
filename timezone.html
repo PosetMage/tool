@@ -25,10 +25,15 @@
             border-collapse: collapse;
             width: 100%;
             text-align: center;
+            table-layout: auto; /* Ensures auto-sizing of cells */
+            word-wrap: break-word; /* Handles text wrapping for content that is too long */
         }
         th, td {
             border: 1px solid #ccc;
-            padding: 8px;
+            padding: 4px; /* Reduce padding for smaller cells */
+            max-width: 50px; /* Optional: Limit the cell width */
+            overflow: hidden; /* Ensures that content does not overflow the cell */
+            text-overflow: ellipsis; /* Adds ellipsis if content overflows */
         }
         .highlight {
             background-color: yellow;
