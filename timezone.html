@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0;
+        }
+        #clock {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+        .highlight {
+            background-color: yellow;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Time Zone Converter</h1>
+        <div id="clock"></div>
+    </div>
+    <table id="timezone-table">
+        <thead>
+            <tr>
+                <!-- Headers will be added dynamically -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be added dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        const table = document.getElementById('timezone-table');
+        const theadRow = table.querySelector('thead tr');
+        const tbody = table.querySelector('tbody');
+        const clock = document.getElementById('clock');
+        const currentHour = new Date().getUTCHours(); // Current hour in UTC
+
+        let currentTime = new Date(); // Store the current time
+
+        // Helper function to format time as HH:MM:SS
+        function formatTime(date) {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Function to update the clock
+        function updateClock() {
+            // Increment the time by 1 second
+            currentTime.setSeconds(currentTime.getSeconds() + 1);
+
+            // Display the formatted time
+            clock.textContent = `Current Time: ${formatTime(currentTime)}`;
+        }
+
+        // Function to refresh the real time every 60 seconds
+        function refreshRealTime() {
+            currentTime = new Date(); // Refresh the real time from the system
+        }
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+
+        // Refresh the real time every 60 seconds
+        setInterval(refreshRealTime, 60000);
+
+        // Initial call to set the clock immediately
+        refreshRealTime();
+        updateClock();
+
+        // Generate column headers dynamically
+        for (let tz = -12; tz <= 12; tz++) {
+            const th = document.createElement('th');
+            th.textContent = tz >= 0 ? `+${tz}` : tz;
+            if (tz === 0) {
+                th.classList.add('bold'); // Bold for "+0" column
+            }
+            theadRow.appendChild(th);
+        }
+
+        // Generate table rows and columns
+        for (let hour = 0; hour < 24; hour++) {
+            const row = document.createElement('tr');
+            if (hour === currentHour) {
+                row.classList.add('highlight'); // Highlight the current hour row
+            }
+
+            for (let tz = -12; tz <= 12; tz++) {
+                const timeCell = document.createElement('td');
+                const adjustedHour = (hour + tz + 24) % 24; // Adjust hour based on timezone
+                timeCell.textContent = adjustedHour.toString().padStart(2, '0');
+                if (tz === 0) {
+                    timeCell.classList.add('bold'); // Bold for "+0" column
+                }
+                row.appendChild(timeCell);
+            }
+
+            tbody.appendChild(row);
+        }
+    </script>
+</body>
+</html>
