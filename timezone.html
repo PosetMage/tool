@@ -57,6 +57,16 @@
         </tbody>
     </table>
     <script>
+        // Disable text selection
+        document.addEventListener('selectstart', function (event) {
+            event.preventDefault();
+        });
+
+        // Disable drag events (optional, to prevent drag selection)
+        document.addEventListener('dragstart', function (event) {
+            event.preventDefault();
+        });
+
         const table = document.querySelector('table');
         const theadRow = table.querySelector('thead tr:last-child');
         const tbody = table.querySelector('tbody');
@@ -82,21 +92,17 @@
 
             // Display the formatted time
             clock.textContent = `Current Time: ${formatTime(currentTime)}`;
-        }
 
-        // Function to refresh the real time every 60 seconds
-        function refreshRealTime() {
-            currentTime = new Date(); // Refresh the real time from the system
+            // Refresh the real time when seconds reach or exceed 58
+            if (currentTime.getSeconds() >= 58) {
+                currentTime = new Date(); // Refresh the real time from the system
+            }
         }
 
         // Update the clock every second
         setInterval(updateClock, 1000);
 
-        // Refresh the real time every 60 seconds
-        setInterval(refreshRealTime, 60000);
-
         // Initial call to set the clock immediately
-        refreshRealTime();
         updateClock();
 
         // Generate column headers dynamically
