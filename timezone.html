@@ -7,36 +7,15 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 10px;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        h1 {
-            margin: 0;
-        }
-        #clock {
-            font-weight: bold;
+            font-size: 12px;
         }
         table {
             border-collapse: collapse;
-            width: 100%;
             text-align: center;
-            table-layout: auto; /* Ensures auto-sizing of cells */
-            word-wrap: break-word; /* Handles text wrapping for content that is too long */
         }
         th, td {
             border: 1px solid #ccc;
-            padding: 4px; /* Reduce padding for smaller cells */
-            max-width: 50px; /* Optional: Limit the cell width */
-            overflow: hidden; /* Ensures that content does not overflow the cell */
-            text-overflow: ellipsis; /* Adds ellipsis if content overflows */
-        }
-        .highlight {
-            background-color: yellow;
+            padding: 4px;
         }
         th {
             background-color: #f4f4f4;
@@ -44,32 +23,52 @@
         .bold {
             font-weight: bold;
         }
+        #clock {
+            font-weight: bold;
+            text-align: right;
+        }
+        .header-row {
+            text-align: left;
+        }
+        .my-timezone {
+            background-color: yellow;
+        }
+        .highlight {
+            background-color: yellow;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Time Zone Converter</h1>
-        <div id="clock"></div>
-    </div>
-    <table id="timezone-table">
+    <table>
+        <!-- First row: Title and Current Time -->
         <thead>
+            <tr class="header-row">
+                <th colspan="25">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Time Zone (click col to select)</span>
+                        <span id="clock">Current Time: 00:30:45</span>
+                    </div>
+                </th>
+            </tr>
+            <!-- Second row: Timezone headers -->
             <tr>
                 <!-- Headers will be added dynamically -->
             </tr>
         </thead>
         <tbody>
-            <!-- Rows will be added dynamically -->
+            <!-- Rows with times will be added dynamically -->
         </tbody>
     </table>
-
     <script>
-        const table = document.getElementById('timezone-table');
-        const theadRow = table.querySelector('thead tr');
+        const table = document.querySelector('table');
+        const theadRow = table.querySelector('thead tr:last-child');
         const tbody = table.querySelector('tbody');
         const clock = document.getElementById('clock');
         const currentHour = new Date().getUTCHours(); // Current hour in UTC
+        const userTimezoneOffset = new Date().getTimezoneOffset() / -60; // User's timezone offset in hours
 
         let currentTime = new Date(); // Store the current time
+        let highlightedColumn = null; // To keep track of the highlighted column
 
         // Helper function to format time as HH:MM:SS
         function formatTime(date) {
@@ -107,7 +106,9 @@
         for (let tz = -12; tz <= 12; tz++) {
             const th = document.createElement('th');
             th.textContent = tz >= 0 ? `+${tz}` : tz;
-            if (tz === 0) {
+            if (tz === userTimezoneOffset) {
+                th.classList.add('my-timezone'); // Light green for user's timezone
+            } else if (tz === 0) {
                 th.classList.add('bold'); // Bold for "+0" column
             }
             theadRow.appendChild(th);
@@ -116,22 +117,69 @@
         // Generate table rows and columns
         for (let hour = 0; hour < 24; hour++) {
             const row = document.createElement('tr');
-            if (hour === currentHour) {
-                row.classList.add('highlight'); // Highlight the current hour row
-            }
-
             for (let tz = -12; tz <= 12; tz++) {
                 const timeCell = document.createElement('td');
                 const adjustedHour = (hour + tz + 24) % 24; // Adjust hour based on timezone
                 timeCell.textContent = adjustedHour.toString().padStart(2, '0');
-                if (tz === 0) {
+
+                if (tz === userTimezoneOffset) {
+                    timeCell.classList.add('my-timezone'); // Light green for user's timezone
+                } else if (tz === 0) {
                     timeCell.classList.add('bold'); // Bold for "+0" column
                 }
+
                 row.appendChild(timeCell);
             }
 
+            if (hour === currentHour) {
+                row.classList.add('highlight'); // Highlight the current hour row
+            }
             tbody.appendChild(row);
         }
+
+        // Highlight the clicked column
+        table.addEventListener('click', function (event) {
+            const clickedCell = event.target;
+
+            // Check if the clicked element is a table cell
+            if (clickedCell.tagName === 'TH' || clickedCell.tagName === 'TD') {
+                const columnIndex = Array.from(clickedCell.parentNode.children).indexOf(clickedCell);
+
+                // Remove highlight from the previously highlighted column
+                if (highlightedColumn !== null) {
+                    Array.from(table.rows).forEach(row => {
+                        if (row.cells[highlightedColumn]) {
+                            row.cells[highlightedColumn].style.backgroundColor = '';
+                        }
+                    });
+                }
+
+                // Highlight the clicked column
+                Array.from(table.rows).forEach(row => {
+                    if (row.cells[columnIndex]) {
+                        row.cells[columnIndex].style.backgroundColor = 'lightgreen';
+                    }
+                });
+
+                // Update the highlighted column index
+                highlightedColumn = columnIndex;
+            }
+        });
+
+        // Remove highlight when clicking outside the table
+        document.addEventListener('click', function (event) {
+            if (!table.contains(event.target)) {
+                // Remove highlight from the previously highlighted column
+                if (highlightedColumn !== null) {
+                    Array.from(table.rows).forEach(row => {
+                        if (row.cells[highlightedColumn]) {
+                            row.cells[highlightedColumn].style.backgroundColor = '';
+                        }
+                    });
+                    highlightedColumn = null;
+                }
+            }
+        });
     </script>
 </body>
 </html>
