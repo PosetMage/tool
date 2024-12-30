@@ -30,10 +30,7 @@
         .header-row {
             text-align: left;
         }
-        .my-timezone {
-            background-color: yellow;
-        }
-        .highlight {
+        .my-tz {
             background-color: yellow;
         }
     </style>
@@ -107,7 +104,7 @@
             const th = document.createElement('th');
             th.textContent = tz >= 0 ? `+${tz}` : tz;
             if (tz === userTimezoneOffset) {
-                th.classList.add('my-timezone'); // Light green for user's timezone
+                th.classList.add('my-tz'); // Light green for user's timezone
             } else if (tz === 0) {
                 th.classList.add('bold'); // Bold for "+0" column
             }
@@ -123,7 +120,7 @@
                 timeCell.textContent = adjustedHour.toString().padStart(2, '0');
 
                 if (tz === userTimezoneOffset) {
-                    timeCell.classList.add('my-timezone'); // Light green for user's timezone
+                    timeCell.classList.add('my-tz'); // Light green for user's timezone
                 } else if (tz === 0) {
                     timeCell.classList.add('bold'); // Bold for "+0" column
                 }
@@ -132,7 +129,7 @@
             }
 
             if (hour === currentHour) {
-                row.classList.add('highlight'); // Highlight the current hour row
+                row.classList.add('my-tz'); // Highlight the current hour row
             }
             tbody.appendChild(row);
         }
