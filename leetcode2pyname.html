@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LeetCode Title Converter</title>
+<script>
+function convertTitle() {
+  const inputTitle = document.getElementById("titleInput").value;
+  const fileExtension = document.getElementById("fileExtension").value;
+  const outputElement = document.getElementById("output");
 
+  // Find the index of the dot followed by a space (". ")
+  const dotSpaceIndex = inputTitle.indexOf(". ");
+
+  if (dotSpaceIndex === -1) {
+    outputElement.textContent = "Invalid format. Please include '. ' in the title.";
+    return;
+  }
+
+  // Extract the number part
+  const numberPart = inputTitle.substring(0, dotSpaceIndex);
+
+  // Pad the number part with leading zeros if needed
+  const paddedNumberPart = numberPart.padStart(4, '0');
+
+  // Extract the text part
+  const textPart = inputTitle.substring(dotSpaceIndex + 2);
+
+  // Format the number part
+  const formattedNumberPart = "_" + paddedNumberPart + "_";
+
+  // Format the text part
+  const formattedTextPart = textPart.replace(/\s/g, "");
+
+  // Combine the parts and add the specified file extension
+  const finalTitle = formattedNumberPart + formattedTextPart + "." + fileExtension;
+
+  outputElement.textContent = finalTitle;
+
+  // Enable the copy button
+  document.getElementById("copyButton").disabled = false;
+}
+
+function copyToClipboard() {
+  const outputElement = document.getElementById("output");
+  const textToCopy = outputElement.textContent;
+
+  // Use the Clipboard API
+  navigator.clipboard.writeText(textToCopy)
+    .then(() => {
+      alert("Copied to clipboard!"); // Optional: Provide feedback
+    })
+    .catch(err => {
+      console.error('Failed to copy: ', err);
+      alert("Failed to copy to clipboard. Check browser permissions.");
+    });
+}
+</script>
+</head>
+<body>
+
+<h1>LeetCode Title Converter</h1>
+
+<label for="titleInput">Enter LeetCode Title:</label>
+<input type="text" id="titleInput" name="titleInput"><br><br>
+
+<label for="fileExtension">Enter File Extension:</label>
+<input type="text" id="fileExtension" name="fileExtension" value="py"><br><br>
+
+<button onclick="convertTitle()">Convert</button>
+<button id="copyButton" onclick="copyToClipboard()" disabled>Copy to Clipboard</button>
+
+<p id="output"></p>
+
+</body>
+</html>
