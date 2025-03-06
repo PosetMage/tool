@@ -2,6 +2,13 @@
 <html>
 <head>
 <title>LeetCode Title Converter</title>
+<style>
+body {
+  background-color: white;
+  color: black;
+  font-family: sans-serif;
+}
+</style>
 <script>
 function convertTitle() {
   const inputTitle = document.getElementById("titleInput").value;
@@ -48,6 +55,8 @@ function copyToClipboard() {
   navigator.clipboard.writeText(textToCopy)
     .then(() => {
       alert("Copied to clipboard!"); // Optional: Provide feedback
+      // Clear the input field after copying
+      document.getElementById("titleInput").value = "";
     })
     .catch(err => {
       console.error('Failed to copy: ', err);
