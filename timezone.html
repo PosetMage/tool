@@ -43,7 +43,7 @@
                 <th colspan="25">
                     <div style="display: flex; justify-content: space-between;">
                         <span>Time Zone (click col to select)</span>
-                        <span id="clock">Current Time: 00:30:45</span>
+                        <span id="clock">Time Loading...</span>
                     </div>
                 </th>
             </tr>
@@ -91,7 +91,7 @@
             currentTime.setSeconds(currentTime.getSeconds() + 1);
 
             // Display the formatted time
-            clock.textContent = `Current Time: ${formatTime(currentTime)}`;
+            clock.textContent = `Machine Time: ${formatTime(currentTime)}`;
 
             // Refresh the real time when seconds reach or exceed 58
             if (currentTime.getSeconds() >= 58) {
