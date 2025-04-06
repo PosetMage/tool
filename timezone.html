@@ -33,6 +33,9 @@
         .my-tz {
             background-color: yellow;
         }
+        .target-tz {
+            background-color: lightgreen;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +79,7 @@
 
         let currentTime = new Date(); // Store the current time
         let highlightedColumn = null; // To keep track of the highlighted column
+        let highlightedRow = null; // To keep track of the highlighted row
 
         // Helper function to format time as HH:MM:SS
         function formatTime(date) {
@@ -140,47 +144,51 @@
             tbody.appendChild(row);
         }
 
-        // Highlight the clicked column
+        // Function to remove 'target-tz' class from all cells
+        function removeHighlight() {
+            const cells = document.querySelectorAll('.target-tz');
+            cells.forEach(cell => cell.classList.remove('target-tz'));
+            highlightedColumn = null;
+            highlightedRow = null;
+        }
+
+        // Highlight the clicked column and row
         table.addEventListener('click', function (event) {
             const clickedCell = event.target;
 
             // Check if the clicked element is a table cell
             if (clickedCell.tagName === 'TH' || clickedCell.tagName === 'TD') {
                 const columnIndex = Array.from(clickedCell.parentNode.children).indexOf(clickedCell);
+                const rowIndex = Array.from(table.rows).indexOf(clickedCell.parentNode);
 
-                // Remove highlight from the previously highlighted column
-                if (highlightedColumn !== null) {
-                    Array.from(table.rows).forEach(row => {
-                        if (row.cells[highlightedColumn]) {
-                            row.cells[highlightedColumn].style.backgroundColor = '';
-                        }
-                    });
-                }
+                // Remove previous highlights
+                removeHighlight();
 
                 // Highlight the clicked column
                 Array.from(table.rows).forEach(row => {
                     if (row.cells[columnIndex]) {
-                        row.cells[columnIndex].style.backgroundColor = 'lightgreen';
+                        row.cells[columnIndex].classList.add('target-tz');
                     }
                 });
 
-                // Update the highlighted column index
+                // Highlight the clicked row
+                if (table.rows[rowIndex]) {
+                    const clickedRow = table.rows[rowIndex];
+                    Array.from(clickedRow.cells).forEach(cell => {
+                        cell.classList.add('target-tz');
+                    });
+                }
+
+                // Update the highlighted column and row indices
                 highlightedColumn = columnIndex;
+                highlightedRow = rowIndex;
             }
         });
 
         // Remove highlight when clicking outside the table
         document.addEventListener('click', function (event) {
             if (!table.contains(event.target)) {
-                // Remove highlight from the previously highlighted column
-                if (highlightedColumn !== null) {
-                    Array.from(table.rows).forEach(row => {
-                        if (row.cells[highlightedColumn]) {
-                            row.cells[highlightedColumn].style.backgroundColor = '';
-                        }
-                    });
-                    highlightedColumn = null;
-                }
+                removeHighlight();
             }
         });
     </script>
