@@ -8,20 +8,23 @@
         body {
             font-family: Arial, sans-serif;
             font-size: 12px;
+            background-color: black;
+            color: white;
         }
         table {
             border-collapse: collapse;
             text-align: center;
         }
         th, td {
-            border: 1px solid #ccc;
+            border: 1px solid gray;
             padding: 4px;
         }
         th {
-            background-color: #f4f4f4;
+            background-color: gray;
         }
         .bold {
             font-weight: bold;
+            font-size: 14px;
         }
         #clock {
             font-weight: bold;
@@ -32,25 +35,23 @@
         }
         .my-tz {
             background-color: yellow;
+            color: black;
         }
         .target-tz {
             background-color: lightgreen;
+            color: black;
         }
     </style>
 </head>
 <body>
+    <h3>
+        Time Zone (click to select target)　　　　
+        <span id="clock">Time Loading...</span>
+    </h3>
+
     <table>
         <!-- First row: Title and Current Time -->
         <thead>
-            <tr class="header-row">
-                <th colspan="25">
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Time Zone (click col to select)</span>
-                        <span id="clock">Time Loading...</span>
-                    </div>
-                </th>
-            </tr>
-            <!-- Second row: Timezone headers -->
             <tr>
                 <!-- Headers will be added dynamically -->
             </tr>
